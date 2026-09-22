@@ -121,6 +121,7 @@ export const useChatStore = defineStore('chat', () => {
         finalizeMessage(chatId, messageId, {
           status: 'done',
           content: data.content,
+          sources: data.sources,
           completedAt: new Date().toISOString(),
         })
         es.close()

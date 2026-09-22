@@ -138,12 +138,9 @@ class GenerationOrchestrator {
 
       if (!content.trim()) throw new Error("The LLM returned an empty response")
 
-      await this._messageRepository.complete({
-        id: assistantMessageId,
-        content,
-        sources: chunks.map(({ title, chunkIndex, score }) => ({ title, chunkIndex, score }))
-      })
-      this._messageBus.publish(assistantMessageId, { type: "done", content })
+      const sources = chunks.map(({ title, chunkIndex, score }) => ({ title, chunkIndex, score }))
+      await this._messageRepository.complete({ id: assistantMessageId, content, sources })
+      this._messageBus.publish(assistantMessageId, { type: "done", content, sources })
     } catch (error) {
       await this.fail(assistantMessageId, error)
     }

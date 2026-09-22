@@ -88,7 +88,7 @@ class StreamMessage implements IUseCase<StreamMessageParams, AsyncGenerator<Stre
           yield event
         }
         yield current.status === MessageStatus.DONE
-          ? { type: "done", content: current.content }
+          ? { type: "done", content: current.content, sources: current.sources }
           : { type: "failed", message: GENERATION_FAILED_MESSAGE }
         return
       }

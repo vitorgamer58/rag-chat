@@ -42,7 +42,7 @@ const openSse = (res: Response, heartbeatMs: number): SseConnection => {
           write("chunk", { seq: event.seq, text: event.text }, event.seq)
           break
         case "done":
-          write("done", { content: event.content })
+          write("done", { content: event.content, sources: event.sources })
           break
         case "failed":
           write("failed", { message: event.message })

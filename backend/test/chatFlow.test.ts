@@ -39,7 +39,7 @@ describe("chat flow over HTTP", () => {
     const events = await readSse(stream)
 
     expect(events.filter((event) => event.event === "chunk").map((event) => event.id)).toEqual(["1", "2", "3"])
-    expect(events.at(-1)).toEqual({ event: "done", data: { content: "Hello brave world" } })
+    expect(events.at(-1)).toEqual({ event: "done", data: { content: "Hello brave world", sources: [] } })
 
     const history = (await (await call(`/api/chats/${chatId}/messages`)).json()) as {
       messages: { role: string; content: string; status: string }[]
@@ -71,7 +71,7 @@ describe("chat flow over HTTP", () => {
     const resumed = await readSse(await call(streamPath, { headers: { "Last-Event-ID": "1" } }))
 
     expect(resumed.filter((event) => event.event === "chunk").map((event) => event.id)).toEqual(["2", "3", "4"])
-    expect(resumed.at(-1)).toEqual({ event: "done", data: { content: "Hello brave new world" } })
+    expect(resumed.at(-1)).toEqual({ event: "done", data: { content: "Hello brave new world", sources: [] } })
   })
 
   it("also resumes while the generation is still running, picking up live chunks after the replay", async () => {
