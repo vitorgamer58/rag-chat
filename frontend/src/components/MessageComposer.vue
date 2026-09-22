@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useChatStore } from '@/stores/chat'
 import ErrorBanner from '@/components/ErrorBanner.vue'
+import TypingIndicator from '@/components/TypingIndicator.vue'
 
 const store = useChatStore()
 const content = ref('')
@@ -40,7 +41,8 @@ async function submit() {
         @keydown.enter.exact.prevent="submit"
       />
       <button type="submit" :disabled="submitting || store.isComposerDisabled || !content.trim()">
-        Send
+        <TypingIndicator v-if="submitting || store.isComposerDisabled" size="sm" label="Enviando" />
+        <template v-else>Send</template>
       </button>
     </form>
   </div>
@@ -49,7 +51,7 @@ async function submit() {
 <style scoped>
 .composer {
   padding: 0.75rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--color-border);
 }
 
 .composer-form {
@@ -60,22 +62,31 @@ async function submit() {
 textarea {
   flex: 1;
   resize: none;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4.5rem;
   padding: 0 1rem;
   border: none;
-  border-radius: 6px;
-  background: #2563eb;
-  color: #fff;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-solid);
+  color: var(--color-text-inverse);
   cursor: pointer;
 }
 
+button:hover:not(:disabled) {
+  background: var(--color-accent-solid-hover);
+}
+
 button:disabled {
-  background: #a9a9a9;
+  background: var(--color-accent-disabled);
   cursor: not-allowed;
 }
 </style>

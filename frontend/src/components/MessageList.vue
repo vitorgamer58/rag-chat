@@ -3,6 +3,7 @@ import { nextTick, ref, watch } from 'vue'
 import { useChatStore } from '@/stores/chat'
 import MessageBubble from '@/components/MessageBubble.vue'
 import ErrorBanner from '@/components/ErrorBanner.vue'
+import TypingIndicator from '@/components/TypingIndicator.vue'
 
 const store = useChatStore()
 const containerRef = ref<HTMLElement | null>(null)
@@ -28,18 +29,21 @@ watch(
 
 <template>
   <div ref="containerRef" class="message-list">
-    <ErrorBanner
-      v-if="store.messagesError"
-      :message="store.messagesError"
-      @retry="store.activeChatId && store.selectChat(store.activeChatId)"
-      @dismiss="store.messagesError = null"
-    />
+    <div class="message-list-inner">
+      <ErrorBanner
+        v-if="store.messagesError"
+        :message="store.messagesError"
+        @retry="store.activeChatId && store.selectChat(store.activeChatId)"
+        @dismiss="store.messagesError = null"
+      />
 
-    <p v-if="!store.messagesLoading && store.activeMessages.length === 0" class="empty">
-      Send a message to start the conversation.
-    </p>
+      <TypingIndicator v-if="store.messagesLoading" size="sm" label="Carregando mensagens" class="loading" />
+      <p v-else-if="store.activeMessages.length === 0" class="empty">
+        Send a message to start the conversation.
+      </p>
 
-    <MessageBubble v-for="message in store.activeMessages" :key="message.id" :message="message" />
+      <MessageBubble v-for="message in store.activeMessages" :key="message.id" :message="message" />
+    </div>
   </div>
 </template>
 
@@ -48,13 +52,24 @@ watch(
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
+}
+
+.message-list-inner {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
 }
 
 .empty {
-  color: #888;
+  color: var(--color-text-muted);
   text-align: center;
+  margin-top: 2rem;
+}
+
+.loading {
+  align-self: center;
   margin-top: 2rem;
 }
 </style>

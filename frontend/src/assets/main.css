@@ -1,3 +1,5 @@
+@import './theme.css';
+
 *,
 *::before,
 *::after {
@@ -18,8 +20,8 @@ body {
     'Segoe UI',
     Roboto,
     sans-serif;
-  color: #1a1a1a;
-  background: #fff;
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
 button,

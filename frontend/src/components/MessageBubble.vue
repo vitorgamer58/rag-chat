@@ -4,6 +4,7 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { useChatStore } from '@/stores/chat'
 import type { Message } from '@/types/message'
+import TypingIndicator from '@/components/TypingIndicator.vue'
 
 const props = defineProps<{ message: Message }>()
 const store = useChatStore()
@@ -14,6 +15,10 @@ const displayText = computed(() => {
   const state = streamState.value
   return state && state.status === 'streaming' ? state.text : props.message.content
 })
+
+const isAwaitingFirstToken = computed(
+  () => streamState.value?.status === 'streaming' && !displayText.value,
+)
 
 const isFailed = computed(
   () => props.message.status === 'failed' || streamState.value?.status === 'failed',
@@ -33,7 +38,12 @@ const renderedHtml = computed(() => {
 
 <template>
   <div class="bubble" :class="[message.role, { failed: isFailed }]">
-    <div v-if="message.role === 'assistant' && !isFailed" class="content" v-html="renderedHtml" />
+    <TypingIndicator v-if="isAwaitingFirstToken" size="md" label="Gerando resposta" />
+    <div
+      v-else-if="message.role === 'assistant' && !isFailed"
+      class="content"
+      v-html="renderedHtml"
+    />
     <p v-else-if="!isFailed" class="content plain">{{ displayText }}</p>
     <p v-else class="content failure">{{ failureText }}</p>
 
@@ -48,23 +58,24 @@ const renderedHtml = computed(() => {
 <style scoped>
 .bubble {
   max-width: 70%;
-  padding: 0.5rem 0.75rem;
-  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-lg);
   margin-bottom: 0.75rem;
 }
 
 .bubble.user {
   align-self: flex-end;
-  background: #dceeff;
+  background: var(--color-accent-pastel);
 }
 
 .bubble.assistant {
   align-self: flex-start;
-  background: #f2f2f2;
+  background: var(--color-surface-assistant);
 }
 
 .bubble.failed {
-  background: #fdecea;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
 }
 
 .content.plain {
@@ -74,7 +85,7 @@ const renderedHtml = computed(() => {
 
 .content.failure {
   margin: 0;
-  color: #611a15;
+  color: var(--color-error-text);
 }
 
 .content :deep(p) {
@@ -86,10 +97,10 @@ const renderedHtml = computed(() => {
 }
 
 .content :deep(pre) {
-  background: #1e1e1e;
-  color: #eee;
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
   padding: 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   overflow-x: auto;
 }
 
@@ -97,6 +108,6 @@ const renderedHtml = computed(() => {
   margin: 0.5rem 0 0;
   padding-left: 1rem;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 </style>

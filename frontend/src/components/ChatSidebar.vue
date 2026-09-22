@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useChatStore } from '@/stores/chat'
 import ErrorBanner from '@/components/ErrorBanner.vue'
+import TypingIndicator from '@/components/TypingIndicator.vue'
 
 const store = useChatStore()
 </script>
@@ -16,7 +17,8 @@ const store = useChatStore()
       @dismiss="store.chatsError = null"
     />
 
-    <p v-if="!store.chatsLoading && store.chats.length === 0" class="empty">No chats yet.</p>
+    <TypingIndicator v-if="store.chatsLoading" size="sm" label="Carregando conversas" class="loading" />
+    <p v-else-if="store.chats.length === 0" class="empty">No chats yet.</p>
 
     <ul class="chat-list">
       <li v-for="chat in store.chats" :key="chat.id">
@@ -41,22 +43,26 @@ const store = useChatStore()
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem;
-  border-right: 1px solid #e0e0e0;
+  border-right: 1px solid var(--color-border);
   overflow-y: auto;
 }
 
 .new-chat {
   padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #f7f7f7;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
   cursor: pointer;
   text-align: left;
 }
 
 .empty {
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.875rem;
+}
+
+.loading {
+  padding: 0.5rem;
 }
 
 .chat-list {
@@ -82,11 +88,11 @@ const store = useChatStore()
 }
 
 .chat-item:hover {
-  background: #f0f0f0;
+  background: var(--color-bg-muted);
 }
 
 .chat-item.active {
-  background: #e6e6e6;
+  background: var(--color-bg-muted);
   font-weight: 600;
 }
 </style>

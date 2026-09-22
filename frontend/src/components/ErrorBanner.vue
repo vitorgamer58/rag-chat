@@ -17,10 +17,10 @@ const emit = defineEmits<{ dismiss: []; retry: [] }>()
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: #fdecea;
-  color: #611a15;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-sm);
   font-size: 0.875rem;
 }
 

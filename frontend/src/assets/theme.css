@@ -1,0 +1,38 @@
+:root {
+  /* surfaces / structure */
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f7f7f8;
+  --color-bg-muted: #ececee;
+  --color-border: #e5e5e7;
+  --color-border-strong: #d6d6d9;
+
+  /* text */
+  --color-text: #1a1a1a;
+  --color-text-secondary: #6e6e76;
+  --color-text-muted: #8e8e96;
+  --color-text-inverse: #ffffff;
+
+  /* accent */
+  --color-accent-pastel: #dbe9fe;
+  --color-accent-solid: #2563eb;
+  --color-accent-solid-hover: #1d4ed8;
+  --color-accent-disabled: #c9c9cd;
+
+  /* assistant bubble */
+  --color-surface-assistant: #f4f4f5;
+
+  /* code block (kept dark-on-light, standard chat-UI convention) */
+  --color-code-bg: #1e1e1e;
+  --color-code-text: #e8e8e8;
+
+  /* errors */
+  --color-error-bg: #fdecea;
+  --color-error-border: #f3c6c2;
+  --color-error-text: #7a2a20;
+
+  /* radii / shadow */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
