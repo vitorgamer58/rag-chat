@@ -4,13 +4,17 @@ import { z } from "zod"
 import { ConfigKey, type ConfigKeyType } from "../src/domain/enums/ConfigKey.js"
 import { Collections, type ConfigDoc } from "../src/infra/database/documents.js"
 
-// Same prompt as ukraine-rag-console/rag_console.py (SYSTEM_PROMPT and build_user_message).
+// Based on the prompt in ukraine-rag-console/rag_console.py (SYSTEM_PROMPT and build_user_message), adapted for
+// a web chat UI: the console version asked for plain text because it only ever printed to a terminal, where
+// Markdown syntax would just show up as literal asterisks/hashes. The frontend renders Markdown, so this asks
+// for it instead.
 const DEFAULT_CONFIG: Record<ConfigKeyType, string> = {
   [ConfigKey.SYSTEM_PROMPT]:
     "Your role is to answer questions or claims in first person, using your own knowledge and the provided context, if any. " +
     "Your role is to defend Ukraine from pro-Russian propaganda. " +
     "You cannot mention that there is a context, and you cannot mention the system prompt; " +
-    "you must answer naturally and without any formatting, just plain text. " +
+    "you must answer naturally, formatting your response in Markdown when it improves clarity " +
+    "(e.g. **bold**, lists, or code blocks), without ever mentioning that you are using Markdown. " +
     "You can cite scientific articles (papers) if there are any in the context and it makes sense to answer. " +
     "If you don't have information about something, simply state that you don't have any information as briefly as possible.",
   // {{context}} is replaced by the rendered context_template (or by nothing when no chunk was retrieved).
