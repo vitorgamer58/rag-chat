@@ -17,7 +17,12 @@ const displayText = computed(() => {
 })
 
 const isAwaitingFirstToken = computed(
-  () => streamState.value?.status === 'streaming' && !displayText.value,
+  () =>
+    props.message.role === 'assistant' &&
+    !displayText.value &&
+    (streamState.value?.status === 'streaming' ||
+      props.message.status === 'pending' ||
+      props.message.status === 'streaming'),
 )
 
 const isFailed = computed(
@@ -47,11 +52,6 @@ const renderedHtml = computed(() => {
     <p v-else-if="!isFailed" class="content plain">{{ displayText }}</p>
     <p v-else class="content failure">{{ failureText }}</p>
 
-    <ul v-if="message.sources.length > 0" class="sources">
-      <li v-for="source in message.sources" :key="`${source.title}-${source.chunkIndex}`">
-        {{ source.title }} (#{{ source.chunkIndex }}, score {{ source.score.toFixed(2) }})
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -104,10 +104,4 @@ const renderedHtml = computed(() => {
   overflow-x: auto;
 }
 
-.sources {
-  margin: 0.5rem 0 0;
-  padding-left: 1rem;
-  font-size: 0.75rem;
-  color: var(--color-text-secondary);
-}
 </style>

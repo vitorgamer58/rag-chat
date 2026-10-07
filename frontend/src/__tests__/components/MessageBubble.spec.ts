@@ -63,14 +63,4 @@ describe('MessageBubble', () => {
     expect(wrapper.text()).toContain('Oops')
   })
 
-  it('lists retrieved sources when present', () => {
-    const message: Message = {
-      ...baseMessage,
-      content: 'answer',
-      sources: [{ title: 'Some Paper', chunkIndex: 3, score: 0.87 }],
-    }
-    const wrapper = mount(MessageBubble, { props: { message } })
-    expect(wrapper.text()).toContain('Some Paper')
-    expect(wrapper.text()).toContain('#3')
-  })
 })

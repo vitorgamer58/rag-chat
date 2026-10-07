@@ -60,6 +60,8 @@ export const useChatStore = defineStore('chat', () => {
   // ---- computed ----
   const activeMessages = computed(() => messagesByChat.get(activeChatId.value ?? '') ?? [])
 
+  const sendingMessage = ref(false)
+
   const isComposerDisabled = computed(() =>
     activeMessages.value.some(
       (m) => m.role === 'assistant' && (m.status === 'pending' || m.status === 'streaming'),
@@ -263,6 +265,7 @@ export const useChatStore = defineStore('chat', () => {
       completedAt: now,
     })
 
+    sendingMessage.value = true
     try {
       const { userMessageId, assistantMessageId } = await sendMessageApi(chatId, content)
 
@@ -290,6 +293,8 @@ export const useChatStore = defineStore('chat', () => {
       const idx = list.findIndex((m) => m.id === tempId)
       if (idx !== -1) list.splice(idx, 1) // roll back the optimistic bubble
       composerError.value = describeSendError(error)
+    } finally {
+      sendingMessage.value = false
     }
   }
 
@@ -305,6 +310,7 @@ export const useChatStore = defineStore('chat', () => {
     messagesError,
     composerError,
     isComposerDisabled,
+    sendingMessage,
     bootstrap,
     loadChats,
     createNewChat,

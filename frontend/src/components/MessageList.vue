@@ -19,7 +19,7 @@ watch(
     const messages = store.activeMessages
     const last = messages[messages.length - 1]
     const streamingText = last ? store.streaming.get(last.id)?.text : undefined
-    return [messages.length, streamingText?.length ?? 0] as const
+    return [messages.length, streamingText?.length ?? 0, store.sendingMessage] as const
   },
   () => {
     void nextTick(scrollToBottom)
@@ -43,6 +43,10 @@ watch(
       </p>
 
       <MessageBubble v-for="message in store.activeMessages" :key="message.id" :message="message" />
+
+      <div v-if="store.sendingMessage" class="bubble-pending">
+        <TypingIndicator size="md" label="Gerando resposta" />
+      </div>
     </div>
   </div>
 </template>
@@ -66,6 +70,14 @@ watch(
   color: var(--color-text-muted);
   text-align: center;
   margin-top: 2rem;
+}
+
+.bubble-pending {
+  align-self: flex-start;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-assistant);
 }
 
 .loading {
