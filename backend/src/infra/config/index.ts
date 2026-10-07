@@ -34,6 +34,11 @@ const EnvSchema = z
     RATE_LIMIT_MAX_MESSAGES: z.coerce.number().int().positive().default(20),
     RATE_LIMIT_WINDOW_MINUTES: z.coerce.number().positive().default(60),
 
+    IP_RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
+    IP_RATE_LIMIT_GENERAL: z.coerce.number().int().positive().default(120),
+    IP_RATE_LIMIT_WRITE: z.coerce.number().int().positive().default(20),
+    IP_RATE_LIMIT_STREAM: z.coerce.number().int().positive().default(30),
+
     RAG_VECTOR_INDEX: z.string().min(1).default("vector_index"),
     RAG_RETRIEVE_K: z.coerce.number().int().positive().default(6),
     RAG_SCORE_THRESHOLD: z.coerce.number().min(0).max(1).default(0.8),
@@ -82,6 +87,12 @@ const loadConfig = (source: NodeJS.ProcessEnv) => {
       mistral: { apiKey: e.MISTRAL_API_KEY, model: e.MISTRAL_MODEL, embedModel: e.MISTRAL_EMBED_MODEL }
     },
     rateLimit: { maxMessages: e.RATE_LIMIT_MAX_MESSAGES, windowMinutes: e.RATE_LIMIT_WINDOW_MINUTES },
+    ipRateLimit: {
+      windowMs: e.IP_RATE_LIMIT_WINDOW_SECONDS * 1000,
+      generalMax: e.IP_RATE_LIMIT_GENERAL,
+      writeMax: e.IP_RATE_LIMIT_WRITE,
+      streamMax: e.IP_RATE_LIMIT_STREAM
+    },
     rag: { vectorIndex: e.RAG_VECTOR_INDEX, retrieveK: e.RAG_RETRIEVE_K, scoreThreshold: e.RAG_SCORE_THRESHOLD },
     historyMaxMessages: e.HISTORY_MAX_MESSAGES,
     maxMessageLength: e.MAX_MESSAGE_LENGTH,

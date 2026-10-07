@@ -12,6 +12,7 @@ import StreamMessage from "../src/application/usecases/StreamMessage.js"
 import type { RetrievedChunkType } from "../src/domain/entities/RetrievedChunk.js"
 import type { ILLMClient } from "../src/domain/interfaces/clients.js"
 import { createApp } from "../src/infra/http/app.js"
+import type { IpRateLimitOptions } from "../src/infra/http/middlewares/ipRateLimit.js"
 import InMemoryMessageBus from "../src/infra/messaging/InMemoryMessageBus.js"
 import {
   FakeChatRepository,
@@ -28,11 +29,13 @@ import {
 const buildTestApp = ({
   llmClient,
   maxMessages = 20,
-  retrievedChunks = []
+  retrievedChunks = [],
+  ipRateLimit
 }: {
   llmClient: ILLMClient
   maxMessages?: number
   retrievedChunks?: RetrievedChunkType[]
+  ipRateLimit?: IpRateLimitOptions
 }) => {
   const userRepository = new FakeUserRepository()
   const chatRepository = new FakeChatRepository()
@@ -76,7 +79,8 @@ const buildTestApp = ({
     logger: silentLogger,
     corsOrigins: ["http://localhost:5173"],
     maxMessageLength: 100,
-    sseHeartbeatMs: 60_000
+    sseHeartbeatMs: 60_000,
+    ...(ipRateLimit ? { ipRateLimit } : {})
   })
 
   const server = app.listen(0)

@@ -5,7 +5,7 @@ import globals from "globals"
 import eslintConfigPrettier from "eslint-config-prettier/flat"
 
 export default defineConfig([
-  { ignores: ["dist/**", "node_modules/**"] },
+  { ignores: ["dist/**", "node_modules/**", "ecosystem.config.cjs"] },
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {

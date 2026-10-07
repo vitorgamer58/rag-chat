@@ -84,11 +84,15 @@ const main = async () => {
     logger,
     corsOrigins: config.corsOrigins,
     maxMessageLength: config.maxMessageLength,
-    sseHeartbeatMs: config.sseHeartbeatMs
+    sseHeartbeatMs: config.sseHeartbeatMs,
+    ipRateLimit: config.ipRateLimit
   })
 
   const server = app.listen(config.port, config.host, () => {
-    logger.info({ host: config.host, port: config.port, llmProvider: llmClient.provider, llmModel: llmClient.model }, "Server started")
+    logger.info(
+      { host: config.host, port: config.port, llmProvider: llmClient.provider, llmModel: llmClient.model },
+      "Server started"
+    )
   })
 
   let shuttingDown = false

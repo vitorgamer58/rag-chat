@@ -21,7 +21,9 @@ describe("loadConfig", () => {
 
   it("refuses a wildcard CORS origin in production only", () => {
     expect(() => loadConfig({ ...baseEnv, NODE_ENV: "production", CORS_ORIGIN: "*" })).toThrow(/CORS_ORIGIN/)
-    expect(() => loadConfig({ ...baseEnv, NODE_ENV: "production", CORS_ORIGIN: "https://a.com, *" })).toThrow(/CORS_ORIGIN/)
+    expect(() => loadConfig({ ...baseEnv, NODE_ENV: "production", CORS_ORIGIN: "https://a.com, *" })).toThrow(
+      /CORS_ORIGIN/
+    )
     expect(loadConfig({ ...baseEnv, NODE_ENV: "production", CORS_ORIGIN: "https://a.com" }).corsOrigins).toEqual([
       "https://a.com"
     ])

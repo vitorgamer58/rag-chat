@@ -8,6 +8,7 @@ import type RegisterUser from "../../application/usecases/RegisterUser.js"
 import type SendMessage from "../../application/usecases/SendMessage.js"
 import type StreamMessage from "../../application/usecases/StreamMessage.js"
 import type { ILogger } from "../../domain/interfaces/services.js"
+import { createIpRateLimiters, type IpRateLimitOptions } from "./middlewares/ipRateLimit.js"
 import { allowQueryFingerprint, fingerprint } from "./middlewares/fingerprint.js"
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js"
 import { registerUser } from "./middlewares/registerUser.js"
@@ -26,6 +27,7 @@ type AppDependencies = {
   corsOrigins: string[]
   maxMessageLength: number
   sseHeartbeatMs: number
+  ipRateLimit?: IpRateLimitOptions
 }
 
 const createApp = (deps: AppDependencies): Express => {
@@ -50,6 +52,14 @@ const createApp = (deps: AppDependencies): Express => {
   app.get("/health", (_req, res) => {
     res.json({ status: "ok" })
   })
+
+  // Per-IP limits run before the fingerprint/user upsert, so rotating X-Fingerprint neither bypasses them nor creates
+  // users for free.
+  const ipLimiters = createIpRateLimiters(deps.ipRateLimit)
+  app.use("/api", ipLimiters.general)
+  app.post("/api/chats", ipLimiters.write)
+  app.post("/api/chats/:chatId/messages", ipLimiters.write)
+  app.use("/api/chats/:chatId/messages/:messageId/stream", ipLimiters.stream)
 
   // Must come before the fingerprint middleware: EventSource cannot send the X-Fingerprint header.
   app.use("/api/chats/:chatId/messages/:messageId/stream", allowQueryFingerprint())
