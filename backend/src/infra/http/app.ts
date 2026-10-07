@@ -30,6 +30,8 @@ type AppDependencies = {
 const createApp = (deps: AppDependencies): Express => {
   const app = express()
   app.disable("x-powered-by")
+  // The only hop in front of the app is Apache on loopback; it overwrites X-Forwarded-For with the real client IP.
+  app.set("trust proxy", "loopback")
 
   app.use(
     cors({
