@@ -1,5 +1,6 @@
 import cors from "cors"
 import express, { type Express } from "express"
+import helmet from "helmet"
 import type CreateChat from "../../application/usecases/CreateChat.js"
 import type GetChatMessages from "../../application/usecases/GetChatMessages.js"
 import type ListChats from "../../application/usecases/ListChats.js"
@@ -33,6 +34,8 @@ const createApp = (deps: AppDependencies): Express => {
   // The only hop in front of the app is Apache on loopback; it overwrites X-Forwarded-For with the real client IP.
   app.set("trust proxy", "loopback")
 
+  // JSON/SSE API: the frontend CSP is served by the static host. CORP is relaxed because the SPA lives on another origin.
+  app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }))
   app.use(
     cors({
       origin: deps.corsOrigins.includes("*") ? "*" : deps.corsOrigins,

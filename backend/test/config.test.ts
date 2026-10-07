@@ -19,6 +19,15 @@ describe("loadConfig", () => {
     expect(loadConfig({ ...baseEnv, HOST: "0.0.0.0", PORT: "5010" })).toMatchObject({ host: "0.0.0.0", port: 5010 })
   })
 
+  it("refuses a wildcard CORS origin in production only", () => {
+    expect(() => loadConfig({ ...baseEnv, NODE_ENV: "production", CORS_ORIGIN: "*" })).toThrow(/CORS_ORIGIN/)
+    expect(() => loadConfig({ ...baseEnv, NODE_ENV: "production", CORS_ORIGIN: "https://a.com, *" })).toThrow(/CORS_ORIGIN/)
+    expect(loadConfig({ ...baseEnv, NODE_ENV: "production", CORS_ORIGIN: "https://a.com" }).corsOrigins).toEqual([
+      "https://a.com"
+    ])
+    expect(loadConfig({ ...baseEnv, CORS_ORIGIN: "*" }).corsOrigins).toEqual(["*"])
+  })
+
   it("switches to Mistral through LLM_PROVIDER (case-insensitive) without needing the Kimi key", () => {
     const { KIMI_API_KEY: _ignored, ...withoutKimi } = baseEnv
     void _ignored

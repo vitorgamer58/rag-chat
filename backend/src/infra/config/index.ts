@@ -46,6 +46,9 @@ const EnvSchema = z
     if (env.LLM_PROVIDER === LLMProvider.KIMI && !env.KIMI_API_KEY) {
       ctx.addIssue({ code: "custom", path: ["KIMI_API_KEY"], message: "Required when LLM_PROVIDER is KIMI" })
     }
+    if (env.NODE_ENV === "production" && env.CORS_ORIGIN.split(",").some((origin) => origin.trim() === "*")) {
+      ctx.addIssue({ code: "custom", path: ["CORS_ORIGIN"], message: "Wildcard origin is not allowed in production" })
+    }
   })
 
 const loadConfig = (source: NodeJS.ProcessEnv) => {
