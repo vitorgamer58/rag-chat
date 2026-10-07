@@ -14,6 +14,11 @@ describe("loadConfig", () => {
     expect(config.mongo.dbName).toBe("rag")
   })
 
+  it("binds to loopback by default and accepts HOST/PORT overrides", () => {
+    expect(loadConfig(baseEnv)).toMatchObject({ host: "127.0.0.1", port: 3000 })
+    expect(loadConfig({ ...baseEnv, HOST: "0.0.0.0", PORT: "5010" })).toMatchObject({ host: "0.0.0.0", port: 5010 })
+  })
+
   it("switches to Mistral through LLM_PROVIDER (case-insensitive) without needing the Kimi key", () => {
     const { KIMI_API_KEY: _ignored, ...withoutKimi } = baseEnv
     void _ignored

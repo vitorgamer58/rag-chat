@@ -5,6 +5,8 @@ const EnvSchema = z
   .object({
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     PORT: z.coerce.number().int().positive().default(3000),
+    // Loopback by default: in production only the reverse proxy (Apache) may reach the app.
+    HOST: z.string().min(1).default("127.0.0.1"),
     LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
     CORS_ORIGIN: z.string().default("http://localhost:5173"),
 
@@ -58,6 +60,7 @@ const loadConfig = (source: NodeJS.ProcessEnv) => {
   return {
     nodeEnv: e.NODE_ENV,
     port: e.PORT,
+    host: e.HOST,
     logLevel: e.LOG_LEVEL,
     corsOrigins: e.CORS_ORIGIN.split(",")
       .map((origin) => origin.trim())

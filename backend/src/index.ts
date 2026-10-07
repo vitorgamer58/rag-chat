@@ -87,8 +87,8 @@ const main = async () => {
     sseHeartbeatMs: config.sseHeartbeatMs
   })
 
-  const server = app.listen(config.port, () => {
-    logger.info({ port: config.port, llmProvider: llmClient.provider, llmModel: llmClient.model }, "Server started")
+  const server = app.listen(config.port, config.host, () => {
+    logger.info({ host: config.host, port: config.port, llmProvider: llmClient.provider, llmModel: llmClient.model }, "Server started")
   })
 
   let shuttingDown = false
