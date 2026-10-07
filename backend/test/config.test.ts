@@ -12,6 +12,7 @@ describe("loadConfig", () => {
     expect(config.rateLimit).toEqual({ maxMessages: 20, windowMinutes: 60 })
     expect(config.rag).toEqual({ vectorIndex: "vector_index", retrieveK: 6, scoreThreshold: 0.8 })
     expect(config.mongo.dbName).toBe("rag")
+    expect(config.llm.mistral.embedTimeoutMs).toBe(30_000)
   })
 
   it("binds to loopback by default and accepts HOST/PORT overrides", () => {

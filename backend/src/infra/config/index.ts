@@ -20,6 +20,7 @@ const EnvSchema = z
       .pipe(z.enum(LLMProvider)),
     LLM_MAX_TOKENS: z.coerce.number().int().positive().default(20048),
     LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(600_000),
+    EMBEDDING_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
 
     KIMI_API_KEY: z.string().min(1).optional(),
     KIMI_MODEL: z.string().min(1).default("kimi-k3"),
@@ -84,7 +85,12 @@ const loadConfig = (source: NodeJS.ProcessEnv) => {
         baseUrl: e.KIMI_BASE_URL,
         reasoningEffort: e.KIMI_REASONING_EFFORT
       },
-      mistral: { apiKey: e.MISTRAL_API_KEY, model: e.MISTRAL_MODEL, embedModel: e.MISTRAL_EMBED_MODEL }
+      mistral: {
+        apiKey: e.MISTRAL_API_KEY,
+        model: e.MISTRAL_MODEL,
+        embedModel: e.MISTRAL_EMBED_MODEL,
+        embedTimeoutMs: e.EMBEDDING_TIMEOUT_MS
+      }
     },
     rateLimit: { maxMessages: e.RATE_LIMIT_MAX_MESSAGES, windowMinutes: e.RATE_LIMIT_WINDOW_MINUTES },
     ipRateLimit: {

@@ -46,7 +46,8 @@ const main = async () => {
   const llmClient = createLLMClient(config)
   const embeddingClient = new MistralEmbeddingClient({
     apiKey: config.llm.mistral.apiKey,
-    model: config.llm.mistral.embedModel
+    model: config.llm.mistral.embedModel,
+    timeoutMs: config.llm.mistral.embedTimeoutMs
   })
   const messageBus = new InMemoryMessageBus(logger)
 
