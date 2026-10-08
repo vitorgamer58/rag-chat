@@ -2,6 +2,7 @@
 import { useChatStore } from '@/stores/chat'
 import ErrorBanner from '@/components/ErrorBanner.vue'
 import TypingIndicator from '@/components/TypingIndicator.vue'
+import UserIdentity from '@/components/UserIdentity.vue'
 
 defineProps<{ open?: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -46,6 +47,8 @@ function select(id: string) {
         </button>
       </li>
     </ul>
+
+    <UserIdentity class="identity" />
   </aside>
 </template>
 
@@ -108,6 +111,16 @@ function select(id: string) {
 .chat-item.active {
   background: var(--color-bg-muted);
   font-weight: 600;
+}
+
+/* Pinned to the bottom of the sidebar, staying visible while the chat list scrolls. */
+.identity {
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
 }
 
 .backdrop {
