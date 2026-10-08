@@ -3,12 +3,26 @@ import { useChatStore } from '@/stores/chat'
 import ErrorBanner from '@/components/ErrorBanner.vue'
 import TypingIndicator from '@/components/TypingIndicator.vue'
 
+defineProps<{ open?: boolean }>()
+const emit = defineEmits<{ close: [] }>()
+
 const store = useChatStore()
+
+function newChat() {
+  store.createNewChat()
+  emit('close')
+}
+
+function select(id: string) {
+  store.selectChat(id)
+  emit('close')
+}
 </script>
 
 <template>
-  <aside class="sidebar">
-    <button type="button" class="new-chat" @click="store.createNewChat()">+ New chat</button>
+  <div class="backdrop" :class="{ visible: open }" @click="emit('close')"></div>
+  <aside class="sidebar" :class="{ open }">
+    <button type="button" class="new-chat" @click="newChat()">+ New chat</button>
 
     <ErrorBanner
       v-if="store.chatsError"
@@ -26,7 +40,7 @@ const store = useChatStore()
           type="button"
           class="chat-item"
           :class="{ active: chat.id === store.activeChatId }"
-          @click="store.selectChat(chat.id)"
+          @click="select(chat.id)"
         >
           {{ chat.title ?? 'New chat' }}
         </button>
@@ -94,5 +108,43 @@ const store = useChatStore()
 .chat-item.active {
   background: var(--color-bg-muted);
   font-weight: 600;
+}
+
+.backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    width: min(280px, 85vw);
+    background: var(--color-bg);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 </style>
